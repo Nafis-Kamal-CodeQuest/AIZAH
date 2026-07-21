@@ -1,0 +1,1247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIZAH — Pure Cleanliness. Everyday Freshness.</title>
+<meta name="description" content="AIZAH — World-class home care hygiene solutions and irresistible fresh snacks & beverages. ISO 9001 certified, BSTI approved quality.">
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script defer src="https://unpkg.com/alpinejs@3.13.3/dist/cdn.min.js"></script>
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: {
+        jakarta: ['Plus Jakarta Sans', 'sans-serif'],
+      },
+      colors: {
+        brand: {
+          teal: '#4A7A8C',      // Muted dusty blue-teal for Home Care
+          deepTeal: '#345965',  
+          terra: '#B97A56',     // Warm muted terracotta for Foods
+          deepTerra: '#8A5A3E',
+        }
+      },
+      animation: {
+        'fade-up': 'fade-up 0.6s ease-out forwards',
+      },
+      keyframes: {
+        'fade-up': {
+          '0%': { opacity: '0', transform: 'translateY(20px)' },
+          '100%': { opacity: '1', transform: 'translateY(0)' },
+        }
+      }
+    }
+  }
+}
+</script>
+
+<style>
+  * { -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Plus Jakarta Sans', sans-serif; }
+
+  /* Solid corporate navigation */
+  .solid-nav {
+    background: #FFFFFF;
+    border-bottom: 1px solid #E2E8F0;
+  }
+
+  /* Subtle Premium shadows */
+  .card-shadow {
+    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.03);
+  }
+  .card-shadow-hover {
+    box-shadow: 0 4px 12px -4px rgba(0,0,0,0.08);
+  }
+
+  /* Reveal animation */
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+  }
+  .reveal.revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: #f8fafc; }
+  ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 4px; }
+  ::-webkit-scrollbar-thumb:hover { background: #cbd5e1; }
+
+  /* Modal animation */
+  .modal-enter {
+    animation: modal-enter 0.35s ease forwards;
+  }
+  @keyframes modal-enter {
+    from { opacity: 0; transform: scale(0.97) translateY(10px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .overlay-enter {
+    animation: overlay-enter 0.2s ease forwards;
+  }
+  @keyframes overlay-enter {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  [x-cloak] { display: none !important; }
+</style>
+</head>
+
+<body class="font-jakarta bg-white text-slate-800 antialiased">
+
+<div x-data="aizahApp()" x-init="init()" @keydown.escape.window="closeModal()">
+
+  <!-- ==================== STICKY NAVIGATION ==================== -->
+  <header class="fixed top-0 inset-x-0 z-50 solid-nav">
+    <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-16 lg:h-20">
+        
+        <!-- Logo -->
+        <a href="#home" class="flex items-center gap-2.5 group">
+          <div class="relative">
+            <div class="w-9 h-9 rounded-md bg-brand-teal flex items-center justify-center transition-colors group-hover:bg-brand-deepTeal">
+              <span class="text-white font-bold text-base">A</span>
+            </div>
+            <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-sm bg-brand-terra flex items-center justify-center text-white text-[8px] font-bold"></div>
+          </div>
+          <div class="flex flex-col leading-none">
+            <span class="text-lg font-bold tracking-tight text-slate-900">AIZAH</span>
+            <span class="text-[9px] font-medium tracking-[0.15em] text-slate-500 uppercase">Home & Foods</span>
+          </div>
+        </a>
+
+        <!-- Desktop Nav Links -->
+        <div class="hidden lg:flex items-center gap-1">
+          <a href="#products" @click="activeCategory='all'" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors">All Products</a>
+          <a href="#products" @click="filterCategory('homecare')" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-brand-teal hover:bg-slate-50 rounded-md transition-colors flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-teal"></span>
+            Home Care
+          </a>
+          <a href="#products" @click="filterCategory('foods')" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-brand-terra hover:bg-slate-50 rounded-md transition-colors flex items-center gap-1.5">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-terra"></span>
+            Foods & Drinks
+          </a>
+          <a href="#quality" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors">Quality Story</a>
+          <a href="#b2b" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-md transition-colors">B2B Portal</a>
+        </div>
+
+        <!-- Search + CTA -->
+        <div class="flex items-center gap-3">
+          <!-- Search -->
+          <div class="hidden md:flex relative">
+            <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input 
+              type="text" 
+              x-model="searchQuery"
+              @input="scrollToProducts()"
+              placeholder="Search..."
+              class="w-40 lg:w-52 pl-9 pr-3 py-2 text-sm bg-slate-50 border border-slate-200 rounded-md focus:outline-none focus:bg-white focus:border-slate-300 transition-colors"
+            >
+          </div>
+
+          <!-- CTA -->
+          <a href="#b2b" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 bg-slate-900 text-white text-sm font-medium rounded-md hover:bg-slate-800 transition-colors">
+            <i data-lucide="briefcase" class="w-4 h-4"></i>
+            <span class="hidden lg:inline">Distributor &</span> Bulk Orders
+          </a>
+
+          <!-- Mobile menu button -->
+          <button @click="mobileMenuOpen = !mobileMenuOpen" class="lg:hidden p-2 rounded-md hover:bg-slate-100 transition-colors">
+            <i data-lucide="menu" class="w-5 h-5 text-slate-600" x-show="!mobileMenuOpen"></i>
+            <i data-lucide="x" class="w-5 h-5 text-slate-600" x-show="mobileMenuOpen" x-cloak></i>
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div x-show="mobileMenuOpen" x-cloak x-transition class="lg:hidden border-t border-slate-100 bg-white">
+      <div class="px-4 py-3 space-y-1">
+        <div class="relative mb-2">
+          <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="text" x-model="searchQuery" @input="scrollToProducts()" placeholder="Search products..." class="w-full pl-9 pr-3 py-2 text-sm bg-slate-100 rounded-md focus:outline-none border border-transparent focus:bg-white focus:border-slate-300">
+        </div>
+        <a @click="filterCategory('all'); mobileMenuOpen=false" href="#products" class="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-md">All Products</a>
+        <a @click="filterCategory('homecare'); mobileMenuOpen=false" href="#products" class="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-md">Home Care</a>
+        <a @click="filterCategory('foods'); mobileMenuOpen=false" href="#products" class="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-md">Foods & Drinks</a>
+        <a @click="mobileMenuOpen=false" href="#quality" class="block px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 rounded-md">Quality Story</a>
+        <a @click="mobileMenuOpen=false" href="#b2b" class="block px-3 py-2 mt-2 text-sm font-medium text-white bg-slate-900 rounded-md text-center">Distributor & Bulk Orders</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== HERO SECTION ==================== -->
+  <section id="home" class="pt-24 lg:pt-32 py-16 lg:py-24 bg-white border-b border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-3xl mx-auto mb-12 lg:mb-16">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-50 border border-slate-200 rounded-full text-xs font-medium tracking-wide text-slate-600 uppercase mb-5">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+          ISO 9001 Certified · BSTI Approved
+        </div>
+        
+        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight leading-tight text-slate-900 mb-4">
+          Pure Cleanliness. <span class="text-brand-teal">Everyday</span> <span class="text-brand-terra">Freshness.</span>
+        </h1>
+        
+        <p class="text-base lg:text-lg text-slate-500 font-normal leading-relaxed max-w-2xl mx-auto">
+          Discover AIZAH's world-class range of home hygiene solutions and irresistible fresh snacks — crafted for millions of families across the nation.
+        </p>
+      </div>
+
+      <!-- Dual Hero Cards -->
+      <div class="grid md:grid-cols-2 gap-6 lg:gap-8">
+        
+        <!-- Card 1: Home Care -->
+        <div class="group relative rounded-lg overflow-hidden border border-slate-200 card-shadow card-shadow-hover transition-shadow duration-300 cursor-pointer bg-white" @click="filterCategory('homecare')">
+          <div class="flex flex-col sm:flex-row items-center">
+            <div class="relative w-full sm:w-2/5 h-40 sm:h-auto sm:min-h-[160px] overflow-hidden bg-slate-100">
+              <img src="https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover" alt="Home Care" onerror="this.onerror=null;this.src='https://placehold.co/400x400/e2e8f0/475569?text=AIZAH+Home+Care';">
+              <div class="absolute inset-0 bg-slate-900/10"></div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-white/90 text-slate-700 text-[11px] font-medium rounded-sm">
+                Hygiene
+              </span>
+            </div>
+            <div class="flex-1 p-6 text-left">
+              <h3 class="text-lg font-bold text-slate-900 mb-1">Home Care</h3>
+              <p class="text-sm text-slate-500 mb-3 font-normal">Washing Powder, Liquid Soap, Hand Wash</p>
+              <div class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-teal group-hover:gap-2.5 transition-all">
+                Explore Range
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Foods & Drinks -->
+        <div class="group relative rounded-lg overflow-hidden border border-slate-200 card-shadow card-shadow-hover transition-shadow duration-300 cursor-pointer bg-white" @click="filterCategory('foods')">
+          <div class="flex flex-col sm:flex-row items-center">
+            <div class="relative w-full sm:w-2/5 h-40 sm:h-auto sm:min-h-[160px] overflow-hidden bg-slate-100">
+              <img src="https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=400&q=80" class="w-full h-full object-cover" alt="Foods & Drinks" onerror="this.onerror=null;this.src='https://placehold.co/400x400/e2e8f0/475569?text=AIZAH+Foods';">
+              <div class="absolute inset-0 bg-slate-900/10"></div>
+              <span class="absolute top-3 left-3 px-2.5 py-1 bg-white/90 text-slate-700 text-[11px] font-medium rounded-sm">
+                Snacks
+              </span>
+            </div>
+            <div class="flex-1 p-6 text-left">
+              <h3 class="text-lg font-bold text-slate-900 mb-1">Foods & Drinks</h3>
+              <p class="text-sm text-slate-500 mb-3 font-normal">Chanachur, Daal Bhaja, Water, Fruit Drink</p>
+              <div class="inline-flex items-center gap-1.5 text-sm font-medium text-brand-terra group-hover:gap-2.5 transition-all">
+                Explore Range
+                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats strip -->
+      <div class="mt-16 lg:mt-20 grid grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-6 max-w-4xl mx-auto border-t border-b border-slate-100 py-8">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-slate-900">7+</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Products</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-slate-900">64</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Districts</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-slate-900">500+</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Dealers</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-slate-900">10M+</p>
+          <p class="text-xs font-medium text-slate-500 mt-1 uppercase tracking-wider">Customers</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PRODUCT SHOWCASE ==================== -->
+  <section id="products" class="py-16 lg:py-24 bg-slate-50/50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Section Header -->
+      <div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-8 reveal">
+        <div>
+          <p class="text-xs font-semibold tracking-[0.15em] text-slate-400 uppercase mb-2">Our Catalog</p>
+          <h2 class="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
+            Explore the AIZAH Range
+          </h2>
+        </div>
+        <!-- Search -->
+        <div class="relative w-full md:w-72">
+          <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="text" x-model="searchQuery" placeholder="Search products..." class="w-full pl-9 pr-3 py-2.5 text-sm bg-white border border-slate-200 rounded-md focus:outline-none focus:border-slate-300 transition-colors">
+          <button x-show="searchQuery" @click="searchQuery=''" class="absolute right-2.5 top-1/2 -translate-y-1/2 p-0.5 hover:bg-slate-100 rounded-sm transition-colors">
+            <i data-lucide="x" class="w-3.5 h-3.5 text-slate-400"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div class="flex flex-wrap gap-2 mb-8 reveal">
+        <button @click="activeCategory='all'" :class="activeCategory==='all' ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'" class="px-4 py-2 rounded-md text-sm font-medium border transition-colors flex items-center gap-2">
+          <i data-lucide="layout-grid" class="w-4 h-4"></i>
+          All Products
+          <span class="px-1.5 py-0.5 text-[10px] rounded-sm" :class="activeCategory==='all' ? 'bg-white/20' : 'bg-slate-100'" x-text="products.length"></span>
+        </button>
+        <button @click="activeCategory='homecare'" :class="activeCategory==='homecare' ? 'bg-brand-teal text-white border-brand-teal' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'" class="px-4 py-2 rounded-md text-sm font-medium border transition-colors flex items-center gap-2">
+          <span>🧼</span>
+          Home Care
+          <span class="px-1.5 py-0.5 text-[10px] rounded-sm" :class="activeCategory==='homecare' ? 'bg-white/20' : 'bg-slate-100'" x-text="products.filter(p=>p.category==='homecare').length"></span>
+        </button>
+        <button @click="activeCategory='foods'" :class="activeCategory==='foods' ? 'bg-brand-terra text-white border-brand-terra' : 'bg-white text-slate-600 border-slate-200 hover:border-slate-300'" class="px-4 py-2 rounded-md text-sm font-medium border transition-colors flex items-center gap-2">
+          <span>🍿</span>
+          Snacks & Drinks
+          <span class="px-1.5 py-0.5 text-[10px] rounded-sm" :class="activeCategory==='foods' ? 'bg-white/20' : 'bg-slate-100'" x-text="products.filter(p=>p.category==='foods').length"></span>
+        </button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" x-show="filteredProducts.length > 0">
+        <template x-for="(product, index) in filteredProducts" :key="product.id">
+          <div class="group relative bg-white rounded-lg overflow-hidden border border-slate-200 card-shadow card-shadow-hover transition-shadow duration-300 hover:border-slate-300 reveal" :style="`transition-delay: ${index * 40}ms`">
+            
+            <!-- Visual -->
+            <div class="relative h-36 sm:h-40 overflow-hidden bg-slate-100 border-b border-slate-100">
+              <img :src="product.image" :alt="product.name" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/e2e8f0/475569?text=AIZAH';">
+
+              <!-- Badge -->
+              <div class="absolute top-2 left-2 flex flex-col gap-1">
+                <span x-show="product.badge" class="px-2 py-0.5 bg-white text-[10px] font-medium uppercase tracking-wide rounded-sm inline-flex items-center gap-1 border border-slate-200 text-slate-700" :class="product.badgeColor === 'blue' ? 'text-brand-teal' : 'text-brand-terra'">
+                  <span class="w-1 h-1 rounded-full" :class="product.badgeColor === 'blue' ? 'bg-brand-teal' : 'bg-brand-terra'"></span>
+                  <span x-text="product.badge"></span>
+                </span>
+              </div>
+
+              <!-- Quick view hint -->
+              <div class="absolute top-2 right-2 w-7 h-7 bg-white/90 border border-slate-200 rounded-sm flex items-center justify-center text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                <i data-lucide="eye" class="w-3.5 h-3.5"></i>
+              </div>
+            </div>
+
+            <!-- Content -->
+            <div class="p-4">
+              <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider" x-text="product.categoryLabel"></span>
+              <h3 class="text-sm font-semibold text-slate-900 mt-1 leading-snug line-clamp-2" x-text="product.name"></h3>
+
+              <!-- Pack sizes -->
+              <div class="mt-3 mb-3">
+                <div class="flex flex-wrap gap-1.5">
+                  <template x-for="(size, i) in product.packSizes" :key="i">
+                    <button @click="product.selectedSize = size" 
+                      :class="product.selectedSize === size 
+                        ? (product.category === 'homecare' ? 'bg-slate-100 text-brand-teal border-slate-300' : 'bg-slate-100 text-brand-terra border-slate-300') 
+                        : 'bg-white text-slate-500 border-slate-200 hover:border-slate-300'"
+                      class="px-2 py-1 text-[11px] font-medium rounded-sm border transition-colors"
+                      x-text="size"></button>
+                  </template>
+                </div>
+              </div>
+
+              <!-- CTA -->
+              <button @click="openModal(product)" 
+                class="w-full mt-2 py-2 rounded-md text-xs font-medium transition-colors flex items-center justify-center gap-1.5 border border-slate-200 text-slate-700 hover:bg-slate-900 hover:text-white hover:border-slate-900">
+                Quick View
+                <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+              </button>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- No results -->
+      <div x-show="filteredProducts.length === 0" x-cloak class="text-center py-16">
+        <div class="w-14 h-14 mx-auto mb-4 rounded-lg bg-slate-100 flex items-center justify-center">
+          <i data-lucide="search-x" class="w-7 h-7 text-slate-400"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-slate-700 mb-1">No products found</h3>
+        <p class="text-sm text-slate-500 mb-4">Try adjusting your search or filter</p>
+        <button @click="searchQuery=''; activeCategory='all'" class="px-5 py-2.5 bg-slate-900 text-white rounded-md font-medium text-sm hover:bg-slate-800 transition-colors">Reset Filters</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== QUALITY STORY / TRUST BAR ==================== -->
+  <section id="quality" class="py-16 lg:py-24 bg-white border-t border-slate-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <p class="text-xs font-semibold tracking-[0.15em] text-slate-400 uppercase mb-2">The AIZAH Promise</p>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tight text-slate-900 mb-3">
+          Quality You Can Trust
+        </h2>
+        <p class="text-base text-slate-500 font-normal">
+          Rigorous quality checkpoints, automated packaging lines, and certified laboratory testing.
+        </p>
+      </div>
+
+      <!-- Trust metrics -->
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
+        <div class="reveal group p-5 rounded-lg bg-slate-50/50 border border-slate-200 card-shadow transition-shadow duration-300 hover:card-shadow-hover">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-brand-teal">
+              <i data-lucide="factory" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-900" data-counter="100" data-suffix="%">0%</p>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Automated</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal group p-5 rounded-lg bg-slate-50/50 border border-slate-200 card-shadow transition-shadow duration-300 hover:card-shadow-hover" style="transition-delay: 80ms">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-brand-teal">
+              <i data-lucide="badge-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-base font-bold text-slate-900">ISO 9001</p>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Certified</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal group p-5 rounded-lg bg-slate-50/50 border border-slate-200 card-shadow transition-shadow duration-300 hover:card-shadow-hover" style="transition-delay: 160ms">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-brand-terra">
+              <i data-lucide="shield-check" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-900" data-counter="100" data-suffix="%">0%</p>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">BSTI Approved</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal group p-5 rounded-lg bg-slate-50/50 border border-slate-200 card-shadow transition-shadow duration-300 hover:card-shadow-hover" style="transition-delay: 240ms">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center text-brand-terra">
+              <i data-lucide="truck" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <p class="text-xl font-bold text-slate-900" data-counter="64" data-suffix="">0</p>
+              <p class="text-xs font-medium text-slate-500 uppercase tracking-wide">Districts</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quality story cards -->
+      <div class="grid md:grid-cols-3 gap-6 reveal">
+        <div class="p-6 rounded-lg bg-white border border-slate-200 card-shadow">
+          <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center mb-4">
+            <i data-lucide="flask-conical" class="w-5 h-5 text-brand-teal"></i>
+          </div>
+          <h3 class="text-base font-semibold text-slate-900 mb-2">Lab-Tested Formulas</h3>
+          <p class="text-sm text-slate-500 leading-relaxed font-normal">Every batch undergoes 12-point laboratory testing for pH balance, microbial safety, and active ingredient concentration.</p>
+        </div>
+
+        <div class="p-6 rounded-lg bg-white border border-slate-200 card-shadow">
+          <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center mb-4">
+            <i data-lucide="leaf" class="w-5 h-5 text-brand-terra"></i>
+          </div>
+          <h3 class="text-base font-semibold text-slate-900 mb-2">Premium Ingredients</h3>
+          <p class="text-sm text-slate-500 leading-relaxed font-normal">From imported fragrances to food-grade packaging, we source only certified premium raw materials globally.</p>
+        </div>
+
+        <div class="p-6 rounded-lg bg-white border border-slate-200 card-shadow">
+          <div class="w-10 h-10 rounded-md bg-slate-100 flex items-center justify-center mb-4">
+            <i data-lucide="recycle" class="w-5 h-5 text-emerald-600"></i>
+          </div>
+          <h3 class="text-base font-semibold text-slate-900 mb-2">Eco-Conscious Production</h3>
+          <p class="text-sm text-slate-500 leading-relaxed font-normal">Biodegradable formulas, recyclable packaging, and a water recycling plant that saves 40,000 liters daily.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== B2B CALCULATOR ==================== -->
+  <section id="b2b" class="py-16 lg:py-24 bg-[#1E222A] relative overflow-hidden">
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <div class="text-center max-w-2xl mx-auto mb-12 reveal">
+        <div class="inline-flex items-center gap-2 px-3 py-1 bg-slate-800/50 border border-slate-700 rounded-full text-[11px] font-medium tracking-wide text-slate-400 uppercase mb-4">
+          <i data-lucide="briefcase" class="w-3.5 h-3.5"></i>
+          B2B Wholesale Portal
+        </div>
+        <h2 class="text-2xl lg:text-3xl font-bold tracking-tight text-white mb-3">
+          Become an Authorized Dealer
+        </h2>
+        <p class="text-base text-slate-400 font-normal">
+          Join 500+ successful distributors nationwide. Calculate your dealership tier and unlock wholesale pricing.
+        </p>
+      </div>
+
+      <div class="grid lg:grid-cols-5 gap-6 lg:gap-8">
+        
+        <!-- Calculator Inputs -->
+        <div class="lg:col-span-2 p-6 rounded-lg bg-slate-800/40 border border-slate-700/50">
+          <h3 class="text-base font-semibold text-white mb-5 flex items-center gap-2">
+            <i data-lucide="calculator" class="w-4 h-4 text-slate-400"></i>
+            Dealership Calculator
+          </h3>
+
+          <div class="space-y-5">
+            <!-- Category -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Target Category</label>
+              <div class="grid grid-cols-2 gap-2">
+                <button @click="b2bCategory='homecare'" :class="b2bCategory==='homecare' ? 'bg-brand-teal text-white border-brand-teal' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-slate-800'" class="py-2.5 rounded-md text-sm font-medium border transition-colors flex items-center justify-center gap-1.5">
+                  <span>🧼</span> Home Care
+                </button>
+                <button @click="b2bCategory='foods'" :class="b2bCategory==='foods' ? 'bg-brand-terra text-white border-brand-terra' : 'bg-slate-800/50 text-slate-300 border-slate-700 hover:bg-slate-800'" class="py-2.5 rounded-md text-sm font-medium border transition-colors flex items-center justify-center gap-1.5">
+                  <span>🍿</span> Foods & Drinks
+                </button>
+              </div>
+            </div>
+
+            <!-- Volume -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Monthly Volume (units)</label>
+              <select x-model="b2bVolume" class="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-md text-sm font-normal text-white focus:outline-none focus:border-slate-500 transition-colors">
+                <option value="200" class="bg-slate-800">Up to 500 / month</option>
+                <option value="800" class="bg-slate-800">500 – 2,000 / month</option>
+                <option value="3000" class="bg-slate-800">2,000 – 5,000 / month</option>
+                <option value="8000" class="bg-slate-800">5,000+ / month</option>
+              </select>
+            </div>
+
+            <!-- Region -->
+            <div>
+              <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Region / District</label>
+              <select x-model="b2bRegion" class="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-md text-sm font-normal text-white focus:outline-none focus:border-slate-500 transition-colors">
+                <option value="" class="bg-slate-800">Select district...</option>
+                <optgroup label="Dhaka Division" class="bg-slate-800">
+                  <option value="dhaka" class="bg-slate-800">Dhaka</option>
+                  <option value="gazipur" class="bg-slate-800">Gazipur</option>
+                  <option value="narayanganj" class="bg-slate-800">Narayanganj</option>
+                </optgroup>
+                <optgroup label="Chattogram Division" class="bg-slate-800">
+                  <option value="chattogram" class="bg-slate-800">Chattogram</option>
+                  <option value="comilla" class="bg-slate-800">Comilla</option>
+                </optgroup>
+                <optgroup label="Other" class="bg-slate-800">
+                  <option value="rajshahi" class="bg-slate-800">Rajshahi</option>
+                  <option value="khulna" class="bg-slate-800">Khulna</option>
+                  <option value="sylhet" class="bg-slate-800">Sylhet</option>
+                </optgroup>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Output / Tier Display -->
+        <div class="lg:col-span-3 p-6 rounded-lg bg-slate-800/40 border border-slate-700/50">
+          
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-base font-semibold text-white flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-slate-400"></i>
+              Dealership Tier
+            </h3>
+            <span class="px-2.5 py-1 bg-slate-700/50 text-slate-400 text-[11px] font-medium rounded-sm border border-slate-600/50">
+              Estimated Tier
+            </span>
+          </div>
+
+          <!-- Tier card -->
+          <div class="p-5 rounded-md mb-5 relative bg-slate-800 border border-slate-700/60">
+            <div class="relative flex items-start justify-between mb-4">
+              <div>
+                <p class="text-[11px] font-medium text-slate-400 uppercase tracking-wider">Recommended Program</p>
+                <h4 class="text-xl font-bold text-white mt-1" x-text="dealerTier.name"></h4>
+                <p class="text-xs text-slate-400 mt-0.5" x-text="dealerTier.tagline"></p>
+              </div>
+              <div class="w-10 h-10 rounded-md flex items-center justify-center bg-slate-700/50">
+                <i :data-lucide="dealerTier.icon" class="w-5 h-5 text-slate-300"></i>
+              </div>
+            </div>
+
+            <!-- Margin highlight -->
+            <div class="relative grid grid-cols-3 gap-3 mb-4 border-t border-b border-slate-700/50 py-4">
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Margin</p>
+                <p class="text-base font-semibold text-white mt-1" x-text="dealerTier.margin"></p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Credit</p>
+                <p class="text-base font-semibold text-white mt-1" x-text="dealerTier.credit"></p>
+              </div>
+              <div>
+                <p class="text-[10px] text-slate-400 font-medium uppercase tracking-wide">Min Order</p>
+                <p class="text-base font-semibold text-white mt-1" x-text="dealerTier.minOrder"></p>
+              </div>
+            </div>
+
+            <!-- Benefits -->
+            <div class="relative">
+              <div class="grid sm:grid-cols-2 gap-2.5">
+                <template x-for="(benefit, i) in dealerTier.benefits" :key="i">
+                  <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <i data-lucide="check" class="w-4 h-4 flex-shrink-0 text-slate-500"></i>
+                    <span class="font-normal" x-text="benefit"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+          </div>
+
+          <!-- Lead capture form -->
+          <div x-show="!b2bSubmitted" class="space-y-3">
+            <h4 class="text-base font-semibold text-white flex items-center gap-2">
+              <i data-lucide="user-plus" class="w-4 h-4 text-slate-400"></i>
+              Request Dealer Application
+            </h4>
+            <div class="grid sm:grid-cols-2 gap-3">
+              <input type="text" x-model="b2bName" placeholder="Full Name *" class="px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-md text-sm font-normal text-white placeholder-slate-500 focus:outline-none focus:border-slate-500 transition-colors">
+              <input type="tel" x-model="b2bPhone" placeholder="Phone Number *" class="px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-md text-sm font-normal text-white placeholder-slate-500 focus:outline-none focus:border-slate-500 transition-colors">
+            </div>
+            <input type="email" x-model="b2bEmail" placeholder="Email Address *" class="w-full px-3 py-2.5 bg-slate-800/50 border border-slate-700 rounded-md text-sm font-normal text-white placeholder-slate-500 focus:outline-none focus:border-slate-500 transition-colors">
+            <button @click="submitB2B()" :disabled="!b2bName || !b2bPhone || !b2bEmail || !b2bRegion" 
+              class="w-full py-3 bg-white text-slate-900 font-semibold rounded-md text-sm hover:bg-slate-200 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+              <i data-lucide="send" class="w-4 h-4"></i>
+              Submit Application
+            </button>
+            <p class="text-xs text-slate-500 text-center flex items-center justify-center gap-1.5 pt-1">
+              <i data-lucide="lock" class="w-3 h-3"></i>
+              Confidential. B2B team responds within 24 hours.
+            </p>
+          </div>
+
+          <!-- Success state -->
+          <div x-show="b2bSubmitted" x-cloak x-transition class="text-center py-8">
+            <div class="w-14 h-14 mx-auto mb-4 rounded-full bg-emerald-500/10 flex items-center justify-center">
+              <i data-lucide="check-circle" class="w-7 h-7 text-emerald-500"></i>
+            </div>
+            <h4 class="text-lg font-bold text-white mb-2">Application Received!</h4>
+            <p class="text-sm text-slate-400 mb-4 max-w-sm mx-auto">Thank you, <span class="font-bold text-white" x-text="b2bName"></span>. Your <span class="font-bold text-white" x-text="dealerTier.name"></span> application has been submitted.</p>
+            <p class="text-xs text-slate-500 font-mono">Reference ID: <span class="font-bold text-slate-400" x-text="'AZ-' + Math.random().toString(36).substr(2,8).toUpperCase()"></span></p>
+            <button @click="b2bSubmitted=false; b2bName=''; b2bPhone=''; b2bEmail=''; b2bMessage=''" class="mt-6 px-5 py-2.5 bg-slate-700 hover:bg-slate-600 text-white font-medium rounded-md text-sm transition-colors">Submit Another</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="bg-[#15181E] text-slate-400 pt-14 lg:pt-16 pb-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      
+      <!-- Top section -->
+      <div class="grid lg:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-slate-800/60">
+        
+        <!-- Brand story -->
+        <div class="lg:col-span-4">
+          <div class="flex items-center gap-2.5 mb-4">
+            <div class="relative">
+              <div class="w-9 h-9 rounded-md bg-brand-teal flex items-center justify-center">
+                <span class="text-white font-bold text-base">A</span>
+              </div>
+              <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-sm bg-brand-terra flex items-center justify-center text-white text-[8px] font-bold"></div>
+            </div>
+            <div class="flex flex-col leading-none">
+              <span class="text-lg font-bold tracking-tight text-white">AIZAH</span>
+              <span class="text-[9px] font-medium tracking-[0.15em] text-slate-500 uppercase">Home & Foods</span>
+            </div>
+          </div>
+          <p class="text-sm leading-relaxed mb-5 max-w-sm font-normal">
+            AIZAH is a premium FMCG brand dedicated to delivering world-class home hygiene solutions and irresistible fresh snacks to millions of families. Crafted with care, certified quality, and a commitment to everyday excellence.
+          </p>
+          <div class="flex gap-3">
+            <a href="#" class="w-9 h-9 rounded-md bg-slate-800/50 hover:bg-slate-700 flex items-center justify-center transition-colors">
+              <i data-lucide="facebook" class="w-4 h-4 text-slate-300"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-md bg-slate-800/50 hover:bg-slate-700 flex items-center justify-center transition-colors">
+              <i data-lucide="instagram" class="w-4 h-4 text-slate-300"></i>
+            </a>
+            <a href="#" class="w-9 h-9 rounded-md bg-slate-800/50 hover:bg-slate-700 flex items-center justify-center transition-colors">
+              <i data-lucide="linkedin" class="w-4 h-4 text-slate-300"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- Quick links -->
+        <div class="lg:col-span-2">
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Products</h4>
+          <ul class="space-y-2.5 text-sm">
+            <li><a @click="filterCategory('homecare')" href="#products" class="hover:text-white transition-colors">Home Care</a></li>
+            <li><a @click="filterCategory('foods')" href="#products" class="hover:text-white transition-colors">Foods & Drinks</a></li>
+            <li><a href="#products" class="hover:text-white transition-colors">All Products</a></li>
+            <li><a href="#quality" class="hover:text-white transition-colors">Quality Story</a></li>
+          </ul>
+        </div>
+
+        <!-- Distributor contacts -->
+        <div class="lg:col-span-3">
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Regional Distributors</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-white font-medium">Dhaka Zone</p>
+                <p class="font-normal">+880 1700-000001</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-white font-medium">Chattogram Zone</p>
+                <p class="font-normal">+880 1700-000002</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <div>
+                <p class="text-white font-medium">Rajshahi Zone</p>
+                <p class="font-normal">+880 1700-000003</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Corporate office -->
+        <div class="lg:col-span-3">
+          <h4 class="text-white font-semibold text-sm uppercase tracking-wider mb-4">Corporate Office</h4>
+          <ul class="space-y-3 text-sm">
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="building-2" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <p class="font-normal">AIZAH House, Level 12,<br>Plot 47, Gulshan Avenue,<br>Dhaka 1212, Bangladesh</p>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="phone" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <p class="font-normal">+880 2-5555-0000</p>
+            </li>
+            <li class="flex items-start gap-2.5">
+              <i data-lucide="mail" class="w-4 h-4 text-slate-500 flex-shrink-0 mt-0.5"></i>
+              <p class="font-normal">info@aizah.com</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Certification bar -->
+      <div class="py-6 border-b border-slate-800/60">
+        <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-12">
+          <div class="flex items-center gap-2 text-sm">
+            <i data-lucide="badge-check" class="w-4 h-4 text-slate-500"></i>
+            <span class="font-medium text-slate-300">ISO 9001:2015</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm">
+            <i data-lucide="shield-check" class="w-4 h-4 text-slate-500"></i>
+            <span class="font-medium text-slate-300">BSTI Approved</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm">
+            <i data-lucide="leaf" class="w-4 h-4 text-slate-500"></i>
+            <span class="font-medium text-slate-300">Eco-Friendly</span>
+          </div>
+          <div class="flex items-center gap-2 text-sm">
+            <i data-lucide="award" class="w-4 h-4 text-slate-500"></i>
+            <span class="font-medium text-slate-300">Halal Certified</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Copyright bar -->
+      <div class="pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm">
+        <p class="text-slate-500 font-normal">© 2025 <span class="font-medium text-white">AIZAH</span>. All rights reserved.</p>
+        <div class="flex gap-6">
+          <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+          <a href="#" class="hover:text-white transition-colors">Terms</a>
+          <a href="#" class="hover:text-white transition-colors">Quality Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==================== QUICK VIEW MODAL ==================== -->
+  <template x-if="selectedProduct">
+    <div class="fixed inset-0 z-[100] flex items-center justify-center p-4 overlay-enter" @click.self="closeModal()">
+      <!-- Overlay -->
+      <div class="absolute inset-0 bg-slate-900/60"></div>
+      
+      <!-- Modal content -->
+      <div class="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-white rounded-lg shadow-xl modal-enter">
+        
+        <!-- Close button -->
+        <button @click="closeModal()" class="absolute top-4 right-4 z-10 w-8 h-8 rounded-md bg-white border border-slate-200 flex items-center justify-center hover:bg-slate-50 transition-colors">
+          <i data-lucide="x" class="w-4 h-4 text-slate-700"></i>
+        </button>
+
+        <div class="grid md:grid-cols-5 gap-0">
+          
+          <!-- Visual side -->
+          <div class="md:col-span-2 relative h-48 md:h-full min-h-[240px] overflow-hidden bg-slate-100">
+            <img :src="selectedProduct.image" :alt="selectedProduct.name" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x400/e2e8f0/475569?text=AIZAH';">
+            <div class="absolute inset-0 bg-slate-900/10"></div>
+            
+            <div class="absolute top-3 left-3">
+              <span x-show="selectedProduct.badge" class="px-2.5 py-1 bg-white text-[11px] font-medium uppercase rounded-sm inline-flex items-center gap-1 border border-slate-200 text-slate-700" :class="selectedProduct.badgeColor === 'blue' ? 'text-brand-teal' : 'text-brand-terra'">
+                <span class="w-1 h-1 rounded-full" :class="selectedProduct.badgeColor === 'blue' ? 'bg-brand-teal' : 'bg-brand-terra'"></span>
+                <span x-text="selectedProduct.badge"></span>
+              </span>
+            </div>
+
+            <!-- SKU info at bottom -->
+            <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-[11px] font-mono bg-slate-900/40 backdrop-blur-sm rounded-md px-2.5 py-1.5">
+              <span>SKU: <span x-text="selectedProduct.sku"></span></span>
+              <span x-text="selectedProduct.barcode"></span>
+            </div>
+          </div>
+
+          <!-- Info side -->
+          <div class="md:col-span-3 p-6">
+            <span class="text-[11px] font-medium text-slate-400 uppercase tracking-wider" x-text="selectedProduct.categoryLabel"></span>
+            <h2 class="text-xl font-bold text-slate-900 mt-1 mb-2 leading-tight" x-text="selectedProduct.name"></h2>
+            <p class="text-sm text-slate-500 mb-5 font-normal leading-relaxed" x-text="selectedProduct.description"></p>
+
+            <!-- Pack sizes -->
+            <div class="mb-5">
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <i data-lucide="package" class="w-3.5 h-3.5"></i>
+                Packaging Options
+              </p>
+              <div class="flex flex-wrap gap-2">
+                <template x-for="(size, i) in selectedProduct.packSizes" :key="i">
+                  <button @click="selectedProduct.selectedSize = size" 
+                    :class="selectedProduct.selectedSize === size 
+                      ? (selectedProduct.category === 'homecare' ? 'bg-brand-teal text-white border-brand-teal' : 'bg-brand-terra text-white border-brand-terra') 
+                      : 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'"
+                    class="px-3 py-1.5 text-sm font-medium rounded-md border transition-colors"
+                    x-text="size"></button>
+                </template>
+              </div>
+            </div>
+
+            <!-- Key features -->
+            <div class="mb-5">
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                Key Features
+              </p>
+              <div class="grid grid-cols-1 gap-1.5">
+                <template x-for="(feature, i) in selectedProduct.features" :key="i">
+                  <div class="flex items-start gap-2 text-sm">
+                    <div class="mt-0.5 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center" :class="selectedProduct.category === 'homecare' ? 'bg-slate-100 text-brand-teal' : 'bg-slate-100 text-brand-terra'">
+                      <i data-lucide="check" class="w-2.5 h-2.5"></i>
+                    </div>
+                    <span class="text-slate-700 font-normal" x-text="feature"></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Ingredients -->
+            <div class="mb-5 p-3 rounded-md bg-slate-50 border border-slate-100">
+              <p class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                <i data-lucide="flask-conical" class="w-3.5 h-3.5"></i>
+                Key Ingredients
+              </p>
+              <div class="flex flex-wrap gap-1.5">
+                <template x-for="(ing, i) in selectedProduct.ingredients" :key="i">
+                  <span class="px-2.5 py-1 bg-white text-[11px] font-medium text-slate-600 rounded-sm border border-slate-200" x-text="ing"></span>
+                </template>
+              </div>
+            </div>
+
+            <!-- Bulk sample form -->
+            <div x-show="!quickViewSubmitted" class="p-4 rounded-md border border-slate-200 bg-slate-50/50">
+              <p class="text-sm font-semibold text-slate-900 mb-3 flex items-center gap-1.5">
+                <i data-lucide="package-plus" class="w-4 h-4" :class="selectedProduct.category === 'homecare' ? 'text-brand-teal' : 'text-brand-terra'"></i>
+                Request Bulk Sample — <span x-text="selectedProduct.selectedSize"></span>
+              </p>
+              <div class="space-y-3">
+                <div class="grid grid-cols-2 gap-3">
+                  <input type="text" x-model="quickViewForm.name" placeholder="Name *" class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-md focus:outline-none focus:border-slate-300 transition-colors">
+                  <input type="tel" x-model="quickViewForm.phone" placeholder="Phone *" class="px-3 py-2 text-sm bg-white border border-slate-200 rounded-md focus:outline-none focus:border-slate-300 transition-colors">
+                </div>
+                <button @click="submitQuickView()" :disabled="!quickViewForm.name || !quickViewForm.phone"
+                  :class="selectedProduct.category === 'homecare' 
+                    ? 'bg-brand-teal hover:bg-brand-deepTeal' 
+                    : 'bg-brand-terra hover:bg-brand-deepTerra'"
+                  class="w-full py-2.5 text-white font-semibold rounded-md text-sm transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2">
+                  <i data-lucide="send" class="w-4 h-4"></i>
+                  Request Sample
+                </button>
+              </div>
+            </div>
+
+            <!-- Success -->
+            <div x-show="quickViewSubmitted" x-cloak x-transition class="p-5 rounded-md bg-emerald-50 border border-emerald-100 text-center">
+              <div class="w-12 h-12 mx-auto mb-3 rounded-full bg-emerald-100 flex items-center justify-center">
+                <i data-lucide="check-circle" class="w-6 h-6 text-emerald-600"></i>
+              </div>
+              <h4 class="text-base font-semibold text-slate-900 mb-1">Sample Request Sent!</h4>
+              <p class="text-sm text-slate-600 font-normal">Our team will contact <span class="font-semibold" x-text="quickViewForm.name"></span> within 24 hours regarding <span class="font-semibold" x-text="selectedProduct.name"></span> (<span x-text="selectedProduct.selectedSize"></span>).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </template>
+
+</div>
+
+<!-- ==================== JAVASCRIPT ==================== -->
+<script>
+function aizahApp() {
+  return {
+    // Navigation
+    mobileMenuOpen: false,
+    searchQuery: '',
+    activeCategory: 'all',
+    
+    // Modal
+    selectedProduct: null,
+    quickViewForm: { name: '', phone: '', company: '', message: '' },
+    quickViewSubmitted: false,
+    
+    // B2B
+    b2bCategory: 'homecare',
+    b2bVolume: '200',
+    b2bRegion: '',
+    b2bName: '',
+    b2bPhone: '',
+    b2bEmail: '',
+    b2bMessage: '',
+    b2bSubmitted: false,
+
+    // Products data
+    products: [
+      {
+        id: 1,
+        name: "AIZAH Ultra Clean Washing Powder",
+        shortDesc: "Advanced stain-removal formula",
+        category: "homecare",
+        categoryLabel: "Home Care",
+        image: "https://images.unsplash.com/photo-1610557892470-55d9e80c0bce?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["200g", "500g", "1kg"],
+        selectedSize: "500g",
+        benefits: ["Tough stain removal in one wash", "Color protection technology", "Fresh long-lasting fragrance"],
+        description: "Powerful enzymatic formula that penetrates deep into fabric fibers to lift stubborn stains while keeping colors vibrant and whites bright.",
+        sku: "AZ-WP-001",
+        barcode: "8901234567890",
+        ingredients: ["Bio-Enzymes", "Surfactants", "Optical Brighteners", "Sodium Carbonate", "Fragrance", "Anti-redepositing Agents"],
+        features: ["Phosphate-free eco formula", "Suitable for machine & hand wash", "Low-foam high-efficiency formula", "Safe for all fabric types", "Works in cold water"],
+        badge: "New Formula",
+        badgeColor: "blue"
+      },
+      {
+        id: 2,
+        name: "AIZAH Soft Hygiene Liquid Hand Wash",
+        shortDesc: "Gentle antibacterial hand wash",
+        category: "homecare",
+        categoryLabel: "Home Care",
+        image: "https://images.unsplash.com/photo-1610231052920-cd5a5c91a3a1?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["250ml", "500ml"],
+        selectedSize: "500ml",
+        benefits: ["Kills 99.9% of germs", "Moisturizing glycerin formula", "Dermatologist tested"],
+        description: "Premium liquid hand wash with antibacterial protection and moisturizing glycerin that leaves hands soft, clean, and refreshed after every use.",
+        sku: "AZ-HW-002",
+        barcode: "8901234567891",
+        ingredients: ["Aqua", "Sodium Laureth Sulfate", "Glycerin", "Triclosan", "Aloe Vera Extract", "Citric Acid", "Fragrance"],
+        features: ["Kills 99.9% germs & bacteria", "pH-balanced gentle formula", "Enriched with aloe vera", "Pump dispenser included", "Suitable for sensitive skin"],
+        badge: "100% Hygienic",
+        badgeColor: "blue"
+      },
+      {
+        id: 3,
+        name: "AIZAH Multi-Surface Liquid Soap",
+        shortDesc: "All-purpose cleaning solution",
+        category: "homecare",
+        categoryLabel: "Home Care",
+        image: "https://images.unsplash.com/photo-1585421514738-01798e348b17?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["500ml", "1L"],
+        selectedSize: "1L",
+        benefits: ["Cuts grease instantly", "Safe on all surfaces", "Streak-free shine"],
+        description: "Versatile multi-surface cleaner that cuts through grease, grime, and bacteria on kitchen counters, floors, glass, and bathroom surfaces with a streak-free finish.",
+        sku: "AZ-MS-003",
+        barcode: "8901234567892",
+        ingredients: ["Aqua", "Anionic Surfactants", "Non-ionic Surfactants", "Sodium Metasilicate", "Lemon Extract", "Fragrance", "Colorant"],
+        features: ["Multi-surface application", "Cuts grease & grime instantly", "Anti-bacterial action", "Streak-free shine", "Fresh lemon fragrance"],
+        badge: "BSTI Certified",
+        badgeColor: "blue"
+      },
+      {
+        id: 4,
+        name: "AIZAH Spicy Special Chanachur",
+        shortDesc: "Premium crunchy snack mix",
+        category: "foods",
+        categoryLabel: "Snacks & Drinks",
+        image: "https://images.unsplash.com/photo-1599490659213-e2b9527bd087?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["50g", "150g", "300g"],
+        selectedSize: "150g",
+        benefits: ["Premium quality ingredients", "Perfect blend of spices", "Crunchy in every bite"],
+        description: "A masterful blend of crunchy lentils, nuts, sev, and premium spices. Every bite delivers an explosion of authentic flavor and satisfying crunch.",
+        sku: "AZ-CH-004",
+        barcode: "8901234567893",
+        ingredients: ["Bengal Gram", "Peanuts", "Sev", "Curry Leaves", "Raisins", "Spice Mix", "Edible Oil", "Salt"],
+        features: ["Premium grade ingredients", "Traditional spice recipe", "100% vegetarian", "Trans-fat free", "Resealable freshness pack"],
+        badge: "Best Seller",
+        badgeColor: "amber"
+      },
+      {
+        id: 5,
+        name: "AIZAH Crunchy Premium Daal Bhaja",
+        shortDesc: "Crispy fried lentil snack",
+        category: "foods",
+        categoryLabel: "Snacks & Drinks",
+        image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["40g", "100g"],
+        selectedSize: "100g",
+        benefits: ["Made from premium lentils", "Light & crispy texture", "Perfect tea companion"],
+        description: "Golden-fried premium lentils seasoned with authentic spices. Light, crispy, and irresistibly crunchy — the perfect companion for your evening tea.",
+        sku: "AZ-DB-005",
+        barcode: "8901234567894",
+        ingredients: ["Split Chickpeas", "Edible Sunflower Oil", "Salt", "Red Chili Powder", "Turmeric", "Cumin", "Black Salt"],
+        features: ["Premium split lentils", "Slow-fried for perfect crunch", "No artificial preservatives", "Gluten-free", "Resealable pack"],
+        badge: "New Launch",
+        badgeColor: "amber"
+      },
+      {
+        id: 6,
+        name: "AIZAH Crystal Pure Drinking Water",
+        shortDesc: "Mineral-enriched pure water",
+        category: "foods",
+        categoryLabel: "Snacks & Drinks",
+        image: "https://images.unsplash.com/photo-1548839140-29a749e1cf4d?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["500ml", "1.5L", "5L"],
+        selectedSize: "1.5L",
+        benefits: ["7-stage purification process", "Balanced essential minerals", "BPA-free bottle"],
+        description: "Purified through a rigorous 7-stage process including reverse osmosis and UV sterilization. Enhanced with essential minerals for crisp, refreshing taste.",
+        sku: "AZ-WT-006",
+        barcode: "8901234567895",
+        ingredients: ["Purified Water", "Calcium", "Magnesium", "Potassium", "Sodium", "Bicarbonate"],
+        features: ["7-stage purification process", "Reverse osmosis filtered", "UV & ozone sterilized", "BPA-free recyclable bottle", "Balanced pH 7.4"],
+        badge: "100% Pure",
+        badgeColor: "amber"
+      },
+      {
+        id: 7,
+        name: "AIZAH Refreshing Fruit Drink",
+        shortDesc: "Real fruit juice beverage",
+        category: "foods",
+        categoryLabel: "Snacks & Drinks",
+        image: "https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=400&q=80",
+        packSizes: ["250ml", "500ml"],
+        selectedSize: "250ml",
+        benefits: ["Made with real fruit pulp", "No artificial colors", "Rich in Vitamin C"],
+        description: "Bursting with real fruit pulp and natural sweetness. Every sip delivers refreshing fruit flavor with added Vitamin C for a healthy, energizing boost.",
+        sku: "AZ-FD-007",
+        barcode: "8901234567896",
+        ingredients: ["Water", "Fruit Pulp", "Sugar", "Citric Acid", "Vitamin C", "Natural Flavors", "Stabilizers"],
+        features: ["Real fruit pulp content", "Fortified with Vitamin C", "No artificial colors", "Premium aseptic packaging", "Shelf-stable 12 months"],
+        badge: "Vitamin C",
+        badgeColor: "amber"
+      }
+    ],
+
+    // Computed: filtered products
+    get filteredProducts() {
+      let filtered = this.products;
+      if (this.activeCategory !== 'all') {
+        filtered = filtered.filter(p => p.category === this.activeCategory);
+      }
+      if (this.searchQuery.trim()) {
+        const q = this.searchQuery.toLowerCase().trim();
+        filtered = filtered.filter(p =>
+          p.name.toLowerCase().includes(q) ||
+          p.categoryLabel.toLowerCase().includes(q) ||
+          p.shortDesc.toLowerCase().includes(q) ||
+          p.benefits.some(b => b.toLowerCase().includes(q)) ||
+          p.features.some(f => f.toLowerCase().includes(q))
+        );
+      }
+      return filtered;
+    },
+
+    // Computed: B2B dealer tier (Corporate Tiers)
+    get dealerTier() {
+      const v = parseInt(this.b2bVolume);
+      if (v >= 3000) {
+        return {
+          name: 'Enterprise',
+          tagline: 'National / Regional Distribution',
+          icon: 'building-2',
+          margin: '18%',
+          credit: '90 days',
+          minOrder: '5K units',
+          bgClass: 'bg-slate-800',
+          checkClass: 'text-slate-500',
+          benefits: [
+            'Exclusive territory rights',
+            'Priority manufacturing slots',
+            'Dedicated brand manager',
+            'Co-branded marketing campaigns',
+            'Annual business review retreat',
+            '90-day interest-free credit',
+            'Custom packaging options'
+          ]
+        };
+      } else if (v >= 800) {
+        return {
+          name: 'Growth',
+          tagline: 'Multi-Outlet Distribution',
+          icon: 'trending-up',
+          margin: '12%',
+          credit: '60 days',
+          minOrder: '2K units',
+          bgClass: 'bg-slate-800',
+          checkClass: 'text-slate-500',
+          benefits: [
+            'Preferred territory access',
+            'Marketing collateral support',
+            'Quarterly training programs',
+            '60-day credit terms',
+            'Volume incentive bonuses',
+            'POS display materials'
+          ]
+        };
+      } else {
+        return {
+          name: 'Starter',
+          tagline: 'Single Outlet Dealership',
+          icon: 'package',
+          margin: '5%',
+          credit: '30 days',
+          minOrder: '500 units',
+          bgClass: 'bg-slate-800',
+          checkClass: 'text-slate-500',
+          benefits: [
+            'Starter dealership kit',
+            'Online ordering portal access',
+            'Monthly ordering cycle',
+            '30-day credit terms',
+            'Basic marketing materials'
+          ]
+        };
+      }
+    },
+
+    // Methods
+    init() {
+      // Initialize Lucide icons
+      this.$nextTick(() => {
+        if (typeof lucide !== 'undefined') {
+          lucide.createIcons();
+        }
+      });
+
+      // Re-render icons when products change
+      this.$watch('filteredProducts', () => {
+        this.$nextTick(() => {
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        });
+      });
+
+      this.$watch('selectedProduct', () => {
+        this.$nextTick(() => {
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        });
+      });
+
+      this.$watch('dealerTier', () => {
+        this.$nextTick(() => {
+          if (typeof lucide !== 'undefined') {
+            lucide.createIcons();
+          }
+        });
+      });
+
+      // Reveal animation observer
+      this.$nextTick(() => {
+        const revealObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('revealed');
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Counter animation (Simplified for corporate feel)
+        const counterObserver = new IntersectionObserver((entries) => {
+          entries.forEach(entry => {
+            if (entry.isIntersecting && !entry.target.dataset.counted) {
+              entry.target.dataset.counted = 'true';
+              this.animateCounter(entry.target);
+            }
+          });
+        }, { threshold: 0.5 });
+
+        document.querySelectorAll('[data-counter]').forEach(el => counterObserver.observe(el));
+      });
+    },
+
+    animateCounter(el) {
+      const target = parseInt(el.dataset.counter);
+      const suffix = el.dataset.suffix || '';
+      // Instantly set the number without easing flourish
+      el.textContent = target + suffix;
+    },
+
+    filterCategory(cat) {
+      this.activeCategory = cat;
+      this.scrollToProducts();
+    },
+
+    scrollToProducts() {
+      if (this.searchQuery && window.innerWidth < 1024) {
+        this.$nextTick(() => {
+          document.getElementById('products').scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+    },
+
+    openModal(product) {
+      this.selectedProduct = JSON.parse(JSON.stringify(product));
+      this.quickViewSubmitted = false;
+      this.quickViewForm = { name: '', phone: '', company: '', message: '' };
+      document.body.style.overflow = 'hidden';
+    },
+
+    closeModal() {
+      this.selectedProduct = null;
+      document.body.style.overflow = '';
+    },
+
+    submitQuickView() {
+      if (this.quickViewForm.name && this.quickViewForm.phone) {
+        this.quickViewSubmitted = true;
+        this.$nextTick(() => {
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+      }
+    },
+
+    submitB2B() {
+      if (this.b2bName && this.b2bPhone && this.b2bEmail && this.b2bRegion) {
+        this.b2bSubmitted = true;
+        this.$nextTick(() => {
+          if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+      }
+    }
+  }
+}
+</script>
+
+</body>
+</html>
